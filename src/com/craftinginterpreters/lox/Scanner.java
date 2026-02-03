@@ -164,9 +164,8 @@ class Scanner {
         // consume the closing ".
         advance();
 
-        // Tring the quotes before adding the literal token.
+        // Trimminng the quotes before adding the literal token.
         String value = source.substring(start + 1, current - 1);
-        // TODO could add support here for escape sequences
         addToken(STRING, value);
     }
 

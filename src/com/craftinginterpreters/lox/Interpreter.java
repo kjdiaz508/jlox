@@ -31,8 +31,9 @@ class Interpreter implements Expr.Visitor<Object>{
             case MINUS:
                 checkNumberOperand(expr.operator, right);
                 return -(double)right;
+            default:
+                //  can't start a unary expression with any other tokens
         }
-
         // should be unreachable
         return null;
     }
@@ -78,6 +79,7 @@ class Interpreter implements Expr.Visitor<Object>{
             case STAR:
                 checkNumberOperands(expr.operator, left, right);
                 return (double)left * (double)right;
+            default:
         }
 
         // unreachable

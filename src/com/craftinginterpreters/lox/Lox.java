@@ -41,7 +41,7 @@ public class Lox {
             System.out.print("> ");
             String line = reader.readLine();
             if (line == null) break;
-            run(line);
+            runRepl(line);
             hadError = false; // because this is an interactive loop
         }
     }
@@ -56,6 +56,33 @@ public class Lox {
         if (hadError) return;
 
         interpreter.interpret(statements);
+    }
+
+    private static void runRepl(String source){
+        Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scanTokens();
+        Parser parser = new Parser(tokens);
+
+        List<Stmt> statements = parser.parse();
+        if (!hadError) {
+            interpreter.interpret(statements);
+            return;
+        }
+
+        // if we couldn't parse a statement, try an expression.
+        hadError = false;
+        parser = new Parser(tokens);
+        Expr expr = parser.parseExpression();
+
+        if (hadError || expr == null) return;
+
+        try {
+            Object value = interpreter.evaluate(expr);
+            System.out.println(interpreter.stringify(value));
+        } catch (RuntimeError error) {
+            Lox.runtimeError(error);
+        }
+        
     }
 
     static void error(int line, String message) {
